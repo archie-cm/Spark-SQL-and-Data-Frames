@@ -152,72 +152,47 @@ February 2021 data from TLC Trip Record website (https://www1.nyc.gov/site/tlc/a
 
 ### How many taxi trips were there on February 15?
 ```sql
-taxi_trips_15_feb = spark.sql("""
-with trips_15_feb as 
-(SELECT
-    *
-FROM 
-    fhv_trip
-WHERE
-    to_date(pickup_datetime) = '2021-02-15'
-)
-SELECT
-    COUNT(1) as taxi_trips_15_feb
-FROM 
-    trips_15_feb
-WHERE
-    to_date(pickup_datetime) = '2021-02-15'
-""").show()
+total_taxi_trip_0215 = spark.sql(""" 
+
+    SELECT COUNT(pickup_datetime) AS total_taxi_trip_0215
+    FROM data_table
+    WHERE pickup_datetime >= '2021-02-15 00:00:00' AND pickup_datetime < '2021-02-16 00:00:00'
+
+""")
+
+total_taxi_trip_0215.show()
 ```
 ![image](https://user-images.githubusercontent.com/108534539/226107827-79dbb310-a946-4ddf-842c-9e539ed4f178.png)
 
 ## Find the longest trip for each day!
-```sql
-taxi_longest_trips = spark.sql("""
-                              SELECT
-                                  pickup_datetime, dropoff_datetime,
-                                  ROUND(((unix_timestamp(dropoff_datetime) - unix_timestamp(pickup_datetime))/3600),2) AS duration_in_hours
-                              FROM fhv_trip
-                              SORT BY
-                                  duration_in_hours DESC
-                              """)
+```python
+longesttrip_eachday = df.withColumn("pickup_datetime" , to_date(df['pickup_datetime']))\
+                      .select(['pickup_datetime','trip_miles'])\
+                      .where("pickup_datetime >= '2021-02-01' ")\
+                      .groupby(F.col('pickup_datetime')).agg(F.max('trip_miles').alias('longest_trip')).sort(desc("longest_trip"))
+longesttrip_eachday.show(10)
 ```
 ![image](https://user-images.githubusercontent.com/108534539/226107854-25c1bb38-2e74-4a00-adef-27dd7666d35b.png)
 
 ### Find Top 5 Most frequent dispatching_base_num!
 
-```sql
-most_dispatching_base_num = spark.sql("""
-    SELECT 
-          dispatching_base_num,
-          COUNT(1) as amount
-    FROM 
-          fhv_trip
-    GROUP BY
-          1
-    ORDER BY
-          2 DESC
-    LIMIT 
-          5
+```python
+top5_frequent_dbm = df.groupBy("dispatching_base_num").count() \
+                    .orderBy(F.col('count').desc())
+
+top5_frequent_dbm.show(5)
 """)
 ```
 
 ![image](https://user-images.githubusercontent.com/108534539/226107893-a04381fc-0fa7-492c-b298-df63a1cfd6ff.png)
 
 ### Find Top 5 Most common location pairs (PUlocationID and DOlocationID)!
-```sql
-location_pairs = spark.sql("""
-SELECT
-    CONCAT(coalesce(PickUp_Zone, 'Unknown'), '/', coalesce(DropOff_Zone, 'Unknown')) AS zone_pair,
-    COUNT(1) as total_count
-FROM
-    location_pairs
-GROUP BY
-    1
-ORDER BY
-    2 DESC
-LIMIT
-    5
+```python
+top5_location_pairs = df.where("PUlocationID IS NOT NULL AND DOlocationID IS NOT NULL") \
+                      .groupBy(["PUlocationID",'DOlocationID']) \
+                      .count() \
+                      .orderBy(F.col('count').desc())
+top5_location_pairs.show(5)
 ;
 """)
 ```
@@ -238,6 +213,10 @@ load_to_bq(df_longesttrip_eachday, 'longesttrip_eachday')
 load_to_bq(df_top5_frequent_dbm, 'top5_frequent_dbm')
 load_to_bq(df_top5_location_pairs, 'top5_location_pairs')
 """)
+```
+![image](https://user-images.githubusercontent.com/108534539/226108128-f7562391-2dcd-4f0f-a1e5-68418c98274c.png)
+
+![image](https://user-images.githubusercontent.com/108534539/226108184-23b60bcc-dbce-4ed0-9d43-56346334b893.png)
 
 ![image](https://user-images.githubusercontent.com/108534539/226095976-c96b4943-cf09-4f99-b8e8-f29eccfa1f45.png)
 
