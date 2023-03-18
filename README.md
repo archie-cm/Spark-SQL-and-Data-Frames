@@ -91,8 +91,7 @@ val distData = sc.parallelize(data)
 distData.filter(_ < 10).collect()
 ```
 ### Screenshots
-![spark-cli](https://user-images.githubusercontent.com/85284506/206483164-2cf65aa1-9b2e-47f5-a19c-a016188fbae7.jpg)
-![spark-shell](https://user-images.githubusercontent.com/85284506/206483175-2463c1f0-3e52-476a-a0cf-06761663af8f.jpg)
+![spark-cli]![image](https://user-images.githubusercontent.com/108534539/226096370-1e2c870b-31e2-4327-b64d-8292754c7264.png)
 ## PySpark
 
 ### Integrating PySpark with Jupyter Notebook
