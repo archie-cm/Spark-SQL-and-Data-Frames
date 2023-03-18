@@ -223,3 +223,5 @@ LIMIT
 """)
 ```
 ![NO 4](https://user-images.githubusercontent.com/85284506/206878973-b74181a2-50cc-48e3-aa36-b154de7c6ee2.jpg)
+![image](https://user-images.githubusercontent.com/108534539/226095976-c96b4943-cf09-4f99-b8e8-f29eccfa1f45.png)
+
