@@ -169,7 +169,7 @@ WHERE
     to_date(pickup_datetime) = '2021-02-15'
 """).show()
 ```
-![NO 1](https://user-images.githubusercontent.com/85284506/206878865-e07c8c15-b843-4ca3-bb2e-b5a48ee77e0c.jpg)
+![image](https://user-images.githubusercontent.com/108534539/226107827-79dbb310-a946-4ddf-842c-9e539ed4f178.png)
 
 ## Find the longest trip for each day!
 ```sql
@@ -182,7 +182,7 @@ taxi_longest_trips = spark.sql("""
                                   duration_in_hours DESC
                               """)
 ```
-![NO 2](https://user-images.githubusercontent.com/85284506/206878904-3b901d9c-fb7c-4df8-8d85-a568606492d5.jpg)
+![image](https://user-images.githubusercontent.com/108534539/226107854-25c1bb38-2e74-4a00-adef-27dd7666d35b.png)
 
 ### Find Top 5 Most frequent dispatching_base_num!
 
@@ -202,7 +202,7 @@ most_dispatching_base_num = spark.sql("""
 """)
 ```
 
-![NO 3](https://user-images.githubusercontent.com/85284506/206878925-8584461a-c1ad-4c4c-9f2f-3553058c8d03.jpg)
+![image](https://user-images.githubusercontent.com/108534539/226107893-a04381fc-0fa7-492c-b298-df63a1cfd6ff.png)
 
 ### Find Top 5 Most common location pairs (PUlocationID and DOlocationID)!
 ```sql
@@ -221,6 +221,23 @@ LIMIT
 ;
 """)
 ```
-![NO 4](https://user-images.githubusercontent.com/85284506/206878973-b74181a2-50cc-48e3-aa36-b154de7c6ee2.jpg)
+![image](https://user-images.githubusercontent.com/108534539/226107899-81b80505-fbf8-41f0-b969-39fd614f3479.png)
+
+### Write all of the result to BigQuery table.
+```python
+df_total_taxi_trip_0215 = total_taxi_trip_0215.toPandas()
+df_longesttrip_eachday = longesttrip_eachday.toPandas()
+df_top5_frequent_dbm = top5_frequent_dbm.toPandas()
+df_top5_location_pairs = top5_location_pairs.toPandas()
+
+def load_to_bq(df, table_name):
+    pandas_gbq.to_gbq(df, f'{dataset_id}.{table_name}', project_id=project_id)
+
+load_to_bq(df_total_taxi_trip_0215, 'taxi_trip_0215')
+load_to_bq(df_longesttrip_eachday, 'longesttrip_eachday')
+load_to_bq(df_top5_frequent_dbm, 'top5_frequent_dbm')
+load_to_bq(df_top5_location_pairs, 'top5_location_pairs')
+""")
+
 ![image](https://user-images.githubusercontent.com/108534539/226095976-c96b4943-cf09-4f99-b8e8-f29eccfa1f45.png)
 
