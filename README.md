@@ -146,6 +146,7 @@ February 2021 data from TLC Trip Record website (https://www1.nyc.gov/site/tlc/a
 + Find the longest trip for each day!
 + Find Top 5 Most frequent `dispatching_base_num`!
 + Find Top 5 Most common location pairs (PUlocationID and DOlocationID)!
++ Write all of the result to BigQuery table!
 
 
 ## SparkSQL
@@ -217,6 +218,3 @@ load_to_bq(df_top5_location_pairs, 'top5_location_pairs')
 ![image](https://user-images.githubusercontent.com/108534539/226108128-f7562391-2dcd-4f0f-a1e5-68418c98274c.png)
 
 ![image](https://user-images.githubusercontent.com/108534539/226108184-23b60bcc-dbce-4ed0-9d43-56346334b893.png)
-
-![image](https://user-images.githubusercontent.com/108534539/226095976-c96b4943-cf09-4f99-b8e8-f29eccfa1f45.png)
-
